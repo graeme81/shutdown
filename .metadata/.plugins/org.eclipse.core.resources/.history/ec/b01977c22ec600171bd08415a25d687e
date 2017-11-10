@@ -1,0 +1,187 @@
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.awt.Desktop;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Label;
+
+public class Closer {
+
+	protected Shell shlCloser;
+	private Text txtHours;
+	private Text txtMins;
+
+	/**
+	 * Launch the application.
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		try {
+			Closer window = new Closer();
+			window.open();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Open the window.
+	 */
+	public void open() {
+		Display display = Display.getDefault();
+		createContents();
+		shlCloser.open();
+		shlCloser.layout();
+		while (!shlCloser.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
+	}
+
+	/**
+	 * Create contents of the window.
+	 */
+	protected void createContents() {
+		shlCloser = new Shell();
+		shlCloser.setSize(202, 300);
+		shlCloser.setText("Closer");
+		
+		Button btnOne = new Button(shlCloser, SWT.NONE);
+		btnOne.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				
+				Runtime runtime = Runtime.getRuntime();
+				try {
+					runtime.exec("shutdown -s -t 3600");
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnOne.setBounds(10, 10, 168, 25);
+		btnOne.setText("1 Hour");
+		
+		Button btnTwo = new Button(shlCloser, SWT.NONE);
+		btnTwo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Runtime runtime = Runtime.getRuntime();
+				try {
+					runtime.exec("shutdown -s -t 7200");
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnTwo.setText("2 Hours");
+		btnTwo.setBounds(10, 72, 168, 25);
+		
+		Button btnOneHalf = new Button(shlCloser, SWT.NONE);
+		btnOneHalf.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Runtime runtime = Runtime.getRuntime();
+				try {
+					runtime.exec("shutdown -s -t 5400");
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnOneHalf.setText("1.5 Hours");
+		btnOneHalf.setBounds(10, 41, 168, 25);
+		
+		Button btnClose = new Button(shlCloser, SWT.NONE);
+		btnClose.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				System.exit(0);
+			}
+		});
+		btnClose.setText("Close");
+		btnClose.setBounds(10, 226, 168, 25);
+		
+		Button btnCancel = new Button(shlCloser, SWT.NONE);
+		btnCancel.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Runtime runtime = Runtime.getRuntime();
+				try {
+					runtime.exec("shutdown -A");
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnCancel.setText("Cancel");
+		btnCancel.setBounds(10, 195, 168, 25);
+		
+		txtHours = new Text(shlCloser, SWT.BORDER);
+		txtHours.setBounds(72, 103, 106, 21);
+		
+		txtMins = new Text(shlCloser, SWT.BORDER);
+		txtMins.setBounds(72, 130, 106, 21);
+		
+		Button btnCustom = new Button(shlCloser, SWT.NONE);
+		btnCustom.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Runtime runtime = Runtime.getRuntime();
+				int hours, mins;
+				
+				try{
+					if (txtHours.getText()==""){
+						txtHours.setText("0");
+					}
+					hours = Integer.parseInt(txtHours.getText());
+				}catch(Exception exc){
+					MessageDialog.openError(shlCloser,"Error", "Bad Hour Input");
+					return;
+				}
+				
+				try{
+					if (txtMins.getText()==""){
+						txtMins.setText("0");
+					}
+					mins = Integer.parseInt(txtMins.getText());
+				}catch(Exception exc){
+					MessageDialog.openError(shlCloser,"Error", "Bad Minute Input");
+					return;
+				}
+				
+				
+				
+				hours = Integer.parseInt(txtHours.getText());
+				mins = Integer.parseInt(txtMins.getText());
+				int time = ((hours*60) + mins) * 60;
+				try {
+					runtime.exec("shutdown -s -t "+ time);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnCustom.setBounds(10, 164, 168, 25);
+		btnCustom.setText("Custom");
+		
+		Label lblHours = new Label(shlCloser, SWT.NONE);
+		lblHours.setAlignment(SWT.RIGHT);
+		lblHours.setBounds(10, 109, 55, 15);
+		lblHours.setText("Hours:");
+		
+		Label lblMinutes = new Label(shlCloser, SWT.NONE);
+		lblMinutes.setAlignment(SWT.RIGHT);
+		lblMinutes.setBounds(10, 136, 55, 15);
+		lblMinutes.setText("Minutes:");
+		
+
+	}
+}
